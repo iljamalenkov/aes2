@@ -3,7 +3,7 @@ LiquidCrystal lcd(8, 9, 4, 5, 6, 7);  //для экрана
 
 #include <dht.h>        //для сенсора температуры
 DHT sensor = DHT();     //для сенсора температуры
-int tt=0;
+int tt=0; //триггер времени для запуска подпрограмм
 
 
 void setup() {
@@ -18,8 +18,7 @@ delay(1000);        //для сенсора температуры
 
 void loop() {
   
-lcd.setCursor(0, 1);
-lcd.print(millis()/1000);
+lcd.setCursor(0, 0);
  // метод update заставляет сенсор выдать текущие измерения
    delay (10);
    
@@ -39,28 +38,38 @@ void tempRead ()
             char msg[128];
             // данные последнего измерения можно считать соответствующими
             // методами
-            sprintf(msg, "Temperature = %dC, Humidity = %d%%", 
+            sprintf(msg, "T=%dC H=%d%%", 
                     sensor.getTemperatureInt(), sensor.getHumidityInt());
             Serial.println(msg);
+            lcd.setCursor(0, 0);
+            lcd.print(msg);
             break;
         case DHT_ERROR_START_FAILED_1:
         
             Serial.println("Error: start failed (stage 1)");
+            lcd.println("Error: start failed (stage 1)");
              sensor.attach(A1);
                 delay (100);
             break;
         case DHT_ERROR_START_FAILED_2:
             Serial.println("Error: start failed (stage 2)");
+            lcd.println("Error: start failed (stage 2)");
             break;
         case DHT_ERROR_READ_TIMEOUT:
             Serial.println("Error: read timeout");
+            lcd.println("Error: read timeout");
             break;
         case DHT_ERROR_CHECKSUM_FAILURE:
             Serial.println("Error: checksum error");
+            lcd.println("Error: checksum error");
             break;
     }}
     
     void lightRead ()
     {
-      Serial.println(analogRead(A2));
+      int t=analogRead(A2);
+      Serial.println(t);
+      lcd.setCursor(0, 1);
+      lcd.print(t);
+      
     }
