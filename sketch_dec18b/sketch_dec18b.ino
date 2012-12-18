@@ -4,6 +4,8 @@ LiquidCrystal lcd(8, 9, 4, 5, 6, 7);  //для экрана
 #include <dht.h>        //для сенсора температуры
 DHT sensor = DHT();     //для сенсора температуры
 int tt=0;
+
+
 void setup() {
   Serial.begin(9600);
  lcd.begin(16, 2);  //для экрана
@@ -23,6 +25,7 @@ lcd.print(millis()/1000);
    
     // метод update заставляет сенсор выдать текущие измерения
     if (tt==500) tempRead();
+    if (tt==400) lightRead();
     if (tt>500) tt=0;
    
 tt++;
@@ -56,3 +59,8 @@ void tempRead ()
             Serial.println("Error: checksum error");
             break;
     }}
+    
+    void lightRead ()
+    {
+      Serial.println(analogRead(A2));
+    }
