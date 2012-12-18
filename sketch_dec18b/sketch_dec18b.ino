@@ -9,7 +9,7 @@ int tt=0; //триггер времени для запуска подпрогр
 void setup() {
   Serial.begin(9600);
  lcd.begin(16, 2);  //для экрана
-lcd.print("fucking fuck");
+lcd.print("Starting");
 
 sensor.attach(A1);  //для сенсора температуры
 delay(1000);        //для сенсора температуры
@@ -23,8 +23,8 @@ lcd.setCursor(0, 0);
    delay (10);
    
     // метод update заставляет сенсор выдать текущие измерения
-    if (tt==500) tempRead();
-    if (tt==400) lightRead();
+    if (tt==500) tempRead(); //запуск чтения температуры
+    if (tt==400) lightRead(); //запуск чтения освещенности
     if (tt>500) tt=0;
    
 tt++;
