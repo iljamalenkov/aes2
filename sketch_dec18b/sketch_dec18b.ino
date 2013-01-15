@@ -86,8 +86,11 @@ void tempRead ()
     }
      void serialRead(){
        if (Serial.available() > 0) {
- Wire.beginTransmission (BOX1_ADDRESS);
-    Wire.write (Serial.read());
-       Wire.endTransmission ();
+ tellBox1(Serial.read());
+     
 }}
-    
+    void tellBox1(char mess){
+      Wire.beginTransmission (BOX1_ADDRESS);
+      Wire.write (mess);
+      Wire.endTransmission ();  
+  }
