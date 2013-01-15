@@ -1,3 +1,5 @@
+
+
 #include <LiquidCrystal.h> //для экрана
 LiquidCrystal lcd(8, 9, 4, 5, 6, 7);  //для экрана
 
@@ -5,9 +7,17 @@ LiquidCrystal lcd(8, 9, 4, 5, 6, 7);  //для экрана
 DHT sensor = DHT();     //для сенсора температуры
 int tt=0; //триггер времени для запуска подпрограмм
 
+#include <Wire.h>
+
+const byte MY_ADDRESS = 25;
+const byte SLAVE_ADDRESS = 42;
+const byte BOX1_ADDRESS = 42;
+
+
 
 void setup() {
   Serial.begin(9600);
+    Wire.begin (MY_ADDRESS);
  lcd.begin(16, 2);  //для экрана
 lcd.print("Starting");
 
@@ -17,7 +27,8 @@ delay(1000);        //для сенсора температуры
 }
 
 void loop() {
-  
+ serialRead();
+ 
 lcd.setCursor(0, 0);
  // метод update заставляет сенсор выдать текущие измерения
    delay (10);
@@ -73,3 +84,10 @@ void tempRead ()
       lcd.print(t);
       
     }
+     void serialRead(){
+       if (Serial.available() > 0) {
+ Wire.beginTransmission (BOX1_ADDRESS);
+    Wire.write (Serial.read());
+       Wire.endTransmission ();
+}}
+    
