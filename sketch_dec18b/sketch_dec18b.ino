@@ -1,5 +1,24 @@
 
 
+#include <SPI.h>
+#include <Ethernet.h>
+
+#include <ArdOSC.h>
+
+byte myMac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
+byte myIp[]  = { 192, 168, 1, 177 };
+int  serverPort  = 8000;
+OSCServer server;
+int destPort=9000;
+byte destIp[]  = { 0, 0, 0, 0 };
+byte clientIp0[50];
+byte clientIp1[50];
+byte clientIp2[50];
+byte clientIp3[50];
+int clientCount=0;
+byte clientTtl[50];
+OSCClient client;
+OSCMessage global_mes;
 #include <LiquidCrystal.h> //для экрана
 LiquidCrystal lcd(8, 9, 4, 5, 6, 7);  //для экрана
 
@@ -17,16 +36,27 @@ const byte BOX1_ADDRESS = 2;
 
 void setup() {
   Serial.begin(9600);
+ Ethernet.begin(myMac ,myIp); 
+ server.begin(serverPort);
+  server.addCallback("/MTX1",&MTX1);
+ server.addCallback("/MTX2",&MTX2);
+ //server.addCallback("/MTX3",&MTX3);
+ //server.addCallback("/MTX4",&MTX4);
+ //server.addCallback("/MTX5",&MTX5);
     Wire.begin (MY_ADDRESS);
  lcd.begin(16, 2);  //для экрана
 lcd.print("Starting");
 
+
+ 
 sensor.attach(A1);  //для сенсора температуры
 delay(1000);        //для сенсора температуры
 
 }
 
 void loop() {
+  if(server.aviableCheck()>0){Serial.print("w");
+ }
  serialRead();
 lcd.setCursor(0, 0);
  // метод update заставляет сенсор выдать текущие измерения
@@ -115,3 +145,12 @@ lcd.print(c);
    
  }
  Serial.println("");}
+ 
+ void MTX1(OSCMessage *_mes){Serial.println("a1");
+ float tmpF=_mes->getArgFloat(0);
+  if (tmpF==1) {tellBox1('a');tellBox1('1');}
+}
+ void MTX2(OSCMessage *_mes){
+ float tmpF=_mes->getArgFloat(0);
+  if (tmpF==1) {tellBox1('a');tellBox1('0');Serial.println("a0");}
+}
